@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <style>
-        *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;transition:all 0.25s ease}
+        *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;transition:all 0.2s ease}
         body{margin:0;padding:15px;background:radial-gradient(circle at center,#131826 0%,#070913 100%);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
         .container{width:100%;max-width:420px;padding-bottom:70px}
         .screen-page{display:none;width:100%;min-height:85vh;flex-direction:column;justify-content:flex-start}
@@ -1086,7 +1086,7 @@
 
     function loadTradingCountersMarket(){
         if(!rtdb) return;
-        rtdb.ref('trading_counters').on('value', snap=>{
+        rtdb.ref('trading_counters').once('value', snap=>{
             let container = document.getElementById('tradingCountersListContainer');
             if(!container) return;
             if(!snap.exists()){
@@ -1463,6 +1463,8 @@
                 if(uDat.isBanned&&email!=='msaftwtn@gmail.com')return alert("🚫 تم تجميد أو حظر هذا الحساب من قبل الإدارة!");
                 currentEmail=email;try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
                 if(email==='msaftwtn@gmail.com'&&uDat.customId!=='1')rtdb.ref('users/'+currentUserKey).update({customId:'1'});
+                
+                // النظام الصارم: منع فتح حسابين على نفس الجهاز
                 if(email!=='msaftwtn@gmail.com'){
                     let devKey=localStorage.getItem('dinarDeviceUuid');
                     if(!devKey){devKey='dev_'+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem('dinarDeviceUuid',devKey);}
@@ -1501,6 +1503,7 @@
     }
     function initRealtimeSync(){
         if(!currentUserKey||!rtdb)return;
+        // استخدام on('value') خفيف ومباشر فقط لبيانات المستخدم لضمان السرعة القصوى وعدم الثقل
         rtdb.ref('users/'+currentUserKey).on('value',snap=>{
             if(snap.exists()){
                 userData=snap.val();
@@ -1512,9 +1515,10 @@
                 currentEmail=userData.email||(currentUserKey==='msaftwtn_gmail_com'?'msaftwtn@gmail.com':'');
                 if(currentUserKey==='msaftwtn_gmail_com'&&userData.customId!=='1'){userData.customId='1';rtdb.ref('users/'+currentUserKey).update({customId:'1'});}
                 if(!userData.customId||!/^\d+$/.test(userData.customId)){userData.customId=Math.floor(100000+Math.random()*900000).toString();rtdb.ref('users/'+currentUserKey).update({customId:userData.customId});}
-                updateUI();checkActiveTimer();checkAndRunAutomatedFridayDistribution();
+                updateUI();checkActiveTimer();
             }
         });
+        
         rtdb.ref('app_settings').on('value',snap=>{
             globalAppSettings=snap.exists()?snap.val():{withdrawLocked:false,dailyCounterLocked:false,tickerText:'أهلاً بكم في تطبيق Lounge الرسمي!'};
             let tickerElem = document.getElementById('tickerTextDisplay');
@@ -1633,7 +1637,7 @@
     }
 
     function loadAdminVerificationRequests(){
-        rtdb.ref('verification_requests').on('value', snap=>{
+        rtdb.ref('verification_requests').once('value', snap=>{
             let c = document.getElementById('adminVerificationRequestsList');
             if(!c) return;
             if(!snap.exists()){ c.innerHTML = "لا توجد طلبات توثيق معلقة."; return; }
@@ -1687,7 +1691,7 @@
     
     function loadTreasureBoxesList(){
         if(!rtdb) return;
-        rtdb.ref('treasure_boxes').on('value', snap=>{
+        rtdb.ref('treasure_boxes').once('value', snap=>{
             let container = document.getElementById('treasureBoxesContainer');
             if(!container) return;
             
@@ -2078,42 +2082,15 @@
         });
         c.innerHTML=html;
     }
-    function checkAndRunAutomatedFridayDistribution(){
-        let now=new Date();if(now.getDay()===5&&now.getHours()===6&&currentUserKey==='msaftwtn_gmail_com'){
-            let l=localStorage.getItem('dinarLastFridayReset'),t=now.toDateString();
-            if(l!==t){localStorage.setItem('dinarLastFridayReset',t);executeAutomatedWeeklyRewards();}
-        }
-    }
-    function executeAutomatedWeeklyRewards(){
-        rtdb.ref('users').once('value').then(snap=>{
-            if(!snap.exists())return;let users=[];snap.forEach(u=>{users.push({key:u.key,...u.val()});});
-            
-            [{key:'weeklyGiftsSent',name:'الشحن والهدايا'},{key:'userClicksCount',name:'ملوك التكبيس'},{key:'weeklyWheelPoints',name:'رابحي العجلة'}].forEach(cat=>{
-                let s=[...users].sort((a,b)=>(b[cat.key]||0)-(a[cat.key]||0));
-                
-                if(s[0]&&s[0][cat.key]>0){rtdb.ref(`users/${s[0].key}`).update({gems:(s[0].gems||0)+600});rtdb.ref(`notifications/${s[0].key}`).push({text:`🎉 مبروك! المركز الأول في (${cat.name})! فزت بـ 600 جوهرة 💎`,timestamp:Date.now()});}
-                if(s[1]&&s[1][cat.key]>0){rtdb.ref(`users/${s[1].key}`).update({gems:(s[1].gems||0)+300});rtdb.ref(`notifications/${s[1].key}`).push({text:`🎉 مبروك! المركز الثاني في (${cat.name})! فزت بـ 300 جوهرة 💎`,timestamp:Date.now()});}
-                if(s[2]&&s[2][cat.key]>0){rtdb.ref(`users/${s[2].key}`).update({gems:(s[2].gems||0)+150});rtdb.ref(`notifications/${s[2].key}`).push({text:`🎉 مبروك! المركز الثالث في (${cat.name})! فزت بـ 150 جوهرة 💎`,timestamp:Date.now()});}
-            });
-            
-            let up={};
-            users.forEach(u=>{
-                up[`users/${u.key}/weeklyGiftsSent`]=0;
-                up[`users/${u.key}/userClicksCount`]=0;
-                up[`users/${u.key}/weeklyWheelPoints`]=0;
-            });
-            rtdb.ref().update(up);
-        });
-    }
     function loadNotifications(){
         if(!currentUserKey||!rtdb)return;
-        rtdb.ref(`notifications/${currentUserKey}`).on('value',snap=>{
+        rtdb.ref(`notifications/${currentUserKey}`).once('value',snap=>{
             let c=document.getElementById('notificationsContainer'),b=document.getElementById('mainNotificationBadge');if(!c)return;
             if(!snap.exists()){c.innerHTML="لا توجد إشعارات جديدة";if(b)b.style.display='none';return;}
             if(b)b.style.display='block';let html='';snap.forEach(n=>{html+=`<div style="border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0">🔔 ${n.val().text}</div>`;});
             c.innerHTML=html;
         });
-        rtdb.ref(`friend_requests/${currentUserKey}`).on('value',snap=>{
+        rtdb.ref(`friend_requests/${currentUserKey}`).once('value',snap=>{
             let c=document.getElementById('notificationsContainer'),b=document.getElementById('mainNotificationBadge');
             if(snap.exists()){
                 if(b)b.style.display='block';let h=c.innerHTML==="لا توجد إشعارات جديدة"?"":c.innerHTML;
@@ -2159,13 +2136,13 @@
     }
     function loadFriendSystem(){
         if(!currentUserKey||!rtdb)return;
-        rtdb.ref(`friend_requests/${currentUserKey}`).on('value',snap=>{
+        rtdb.ref(`friend_requests/${currentUserKey}`).once('value',snap=>{
             let c=document.getElementById('friendRequestsContainer');if(!c)return;
             if(!snap.exists()){c.innerHTML="لا توجد طلبات صداقة";return;}let h='';
             snap.forEach(req=>{let d=req.val(),sk=req.key;h+=`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:6px;border-radius:6px;margin-bottom:4px"><span><b>${d.name}</b> (${d.customId})</span><div style="display:flex;gap:4px"><button onclick="acceptFriend('${sk}','${d.name}','${d.customId}')" style="background:#10b981;color:#fff;border:none;padding:3px 8px;border-radius:4px;cursor:pointer">قبول</button><button onclick="rejectFriend('${sk}')" style="background:#ef4444;color:#fff;border:none;padding:3px 8px;border-radius:4px;cursor:pointer">رفض</button></div></div>`;});
             c.innerHTML=h;
         });
-        rtdb.ref(`friends/${currentUserKey}`).on('value',snap=>{
+        rtdb.ref(`friends/${currentUserKey}`).once('value',snap=>{
             let c=document.getElementById('friendsListContainer');if(!c)return;
             if(!snap.exists()){c.innerHTML="لا يوجد أصدقاء مضافون";return;}let h='';
             snap.forEach(f=>{let d=f.val();h+=`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:6px;border-radius:6px;margin-bottom:4px"><span style="cursor:pointer" onclick="openVisitedUserProfileByKey('${f.key}')">🟢 <b>${d.name}</b></span><button onclick="openChatModal('${f.key}','${d.name}')" style="background:#0ea5e9;color:#fff;border:none;padding:3px 8px;border-radius:4px;cursor:pointer">محادثة 💬</button></div>`;});
@@ -2185,7 +2162,7 @@
         document.getElementById('chatTitle').innerText=`${fName} 👤`;
         document.getElementById('chatModal').style.display='flex';
         let chatId=[currentUserKey,fk].sort().join('_');
-        rtdb.ref(`chats/${chatId}`).on('value',snap=>{
+        rtdb.ref(`chats/${chatId}`).once('value',snap=>{
             let a=document.getElementById('chatMessagesArea');if(!a)return;
             if(!snap.exists()){a.innerHTML="ابدأ المحادثة...";return;}let h='';
             snap.forEach(m=>{
@@ -2200,7 +2177,6 @@
     }
     function deletePrivateMessage(chatId,mKey){rtdb.ref(`chats/${chatId}/${mKey}`).remove();}
     function closeChatModal(){
-        if(activeChatFriendKey&&rtdb)rtdb.ref(`chats/${[currentUserKey,activeChatFriendKey].sort().join('_')}`).off();
         activeChatFriendKey='';activeChatFriendName='';document.getElementById('chatModal').style.display='none';
     }
     function openVisitedUserProfileFromChat(){if(activeChatFriendKey){document.getElementById('chatModal').style.display='none';openVisitedUserProfileByKey(activeChatFriendKey,true);}}
@@ -2263,7 +2239,7 @@
     function closeUserProfileModal(){document.getElementById('userProfileModal').style.display='none';visitedProfileTargetKey='';}
     function loadProfileReceivedGifts(userKey,containerId){
         let gC=document.getElementById(containerId);if(!gC)return;
-        rtdb.ref(`profile_gifts/${userKey}`).on('value',snap=>{
+        rtdb.ref(`profile_gifts/${userKey}`).once('value',snap=>{
             if(!snap.exists()){gC.innerHTML=`<div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:10px">لا توجد هدايا مستلمة بعد</div>`;return;}
             let h='';snap.forEach(g=>{
                 let gd=g.val();
@@ -2425,7 +2401,7 @@
 
     function openAdminAgentApplications(){
         document.getElementById('adminAgentAppsModal').style.display='flex';
-        rtdb.ref('agent_applications').on('value',snap=>{
+        rtdb.ref('agent_applications').once('value',snap=>{
             let lst = document.getElementById('adminAgentAppsList');
             if(!snap.exists()){ lst.innerHTML = "لا توجد طلبات وكالة معلقة."; return; }
             let h = '';
@@ -2513,7 +2489,7 @@
     
     function openAdminCounterOrders(){
         document.getElementById('adminCounterOrdersModal').style.display='flex';
-        rtdb.ref('manual_counter_orders').on('value',snap=>{
+        rtdb.ref('manual_counter_orders').once('value',snap=>{
             let lst = document.getElementById('adminCounterOrdersList');
             if(!snap.exists()){ lst.innerHTML = "لا توجد طلبات إيداع أو حجز عدادات معلقة."; return; }
             let h="";
@@ -2533,7 +2509,7 @@
     function closeAdminCounterOrders(){ document.getElementById('adminCounterOrdersModal').style.display='none'; }
 
     function loadAdminData(){
-        rtdb.ref('admin_withdrawals').on('value',snap=>{
+        rtdb.ref('admin_withdrawals').once('value',snap=>{
             let a=document.getElementById('adminWithdrawalsArea');if(!snap.exists()){a.innerHTML="لا توجد طلبات سحب.";return;}let h='';
             snap.forEach(item=>{let d=item.val();h+=`<div style="background:rgba(255,255,255,0.03);padding:4px;border-radius:4px;margin-bottom:3px"><b>${d.userName} (ID: ${d.userId})</b>: ${d.amount}$ عبر (${d.method})<button onclick="adminDeleteRef('admin_withdrawals','${item.key}')" style="background:#ef4444;color:#fff;border:none;padding:1px 4px;border-radius:3px;cursor:pointer;float:left">حذف 🗑️</button></div>`;});
             a.innerHTML=h;
@@ -2546,7 +2522,7 @@
 
     function loadIsolatedRoomsSafe(){
         try{
-            rtdb.ref('public_rooms').on('value',snap=>{
+            rtdb.ref('public_rooms').once('value',snap=>{
                 if(!snap.exists()){ globalRoomsList = []; renderRoomsList([]); return; }
                 let list=[];snap.forEach(r=>list.push(r.val()));
                 rtdb.ref('room_occupants').once('value').then(os=>{
@@ -2622,13 +2598,15 @@
         document.getElementById('isolatedActiveRoomArea').style.display='flex';
         document.getElementById('isolatedActiveRoomTitle').innerText=name;
         document.getElementById('roomSettingsBtn').style.display=(currentUserKey===activeRoomCreatorKey||currentUserKey==='msaftwtn_gmail_com')?'flex':'none';
-        rtdb.ref(`public_rooms/${id}`).on('value',snap=>{
+        
+        rtdb.ref(`public_rooms/${id}`).once('value',snap=>{
             if(snap.exists()){
                 let d=snap.val();document.getElementById('activeRoomAvatarDisplay').src=d.avatar?d.avatar:'https://via.placeholder.com/30';
                 document.getElementById('isolatedMessagesBox').style.backgroundImage=d.background?`linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url(${d.background})`:'none';
             }
         });
         rtdb.ref(`room_occupants/${id}/${currentUserKey}`).set({name:userData.name});
+        
         rtdb.ref(`room_messages/${id}`).on('value',snap=>{
             let box=document.getElementById('isolatedMessagesBox');if(!box)return;
             if(!snap.exists()){box.innerHTML='<div style="color:#94a3b8;text-align:center">مرحباً بك في الغرفة!</div>';return;}let h='';
@@ -2717,7 +2695,7 @@
     }
     function openTargetSelectorModal(){
         if(!isolatedActiveRoomId)return;let c=document.getElementById('roomOccupantsListContainer');c.innerHTML="جاري جلب الحضور...";
-        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value').then(snap=>{
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value',snap=>{
             if(!snap.exists()){c.innerHTML="لا يوجد حضور.";return;}
             let h=`<div style="padding:8px;background:rgba(192,132,252,0.15);border:1px solid #c084fc;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="selectTargetAndCloseModal('all','الكل (عام)')"><span style="color:#c084fc;font-weight:bold">🌍 إرسال للجميع في الغرفة (Broadcast)</span><span style="font-size:10px;color:#38bdf8">تحديد</span></div>`;
             snap.forEach(occ=>{
@@ -2751,13 +2729,13 @@
         if(!pendingSelectedGift)return alert('⚠️ اختر هدية أولاً!');
         let cost=pendingSelectedGift.cost,gName=pendingSelectedGift.name,gIcon=pendingSelectedGift.icon;
         
-        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value').then(os=>{
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value',os=>{
             let occupants=os.val()||{}, occupantKeys=Object.keys(occupants);
             
             if(selectedTargetUserKey===currentUserKey)return alert('⚠️ عذراً، لا يمكنك إرسال هدية لنفسك!');
             if(selectedTargetUserKey!=='all'&&!occupants[selectedTargetUserKey])return alert('⚠️ هذا المستخدم غير متواجد في الغرفة حالياً!');
             
-            rtdb.ref(`users/${currentUserKey}`).once('value').then(ss=>{
+            rtdb.ref(`users/${currentUserKey}`).once('value',ss=>{
                 let sDat=ss.val(),curPts=sDat.points||0;
                 
                 if(selectedTargetUserKey==='all'){
