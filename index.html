@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق Lounge الرسمي</title>
+    <!-- ربط مكتبات الفايربيز الجديدة -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -1395,18 +1396,19 @@
         return lvl > 50 ? 50 : lvl;
     }
 
+    /* --- دمج إعدادات ومفاتيح مشروع الفايربيز الجديد الخاص بك هنا --- */
     window.addEventListener('load',()=>{
         initLoungeTickerAnimation();
         try{
             const firebaseConfig={
-                apiKey: "AIzaSyDtafaH13sD8fHRNoyzib_5aqLctsuMnY8",
-                authDomain: "lounge-ed8e4.firebaseapp.com",
-                databaseURL: "https://lounge-ed8e4-default-rtdb.firebaseio.com",
-                projectId: "lounge-ed8e4",
-                storageBucket: "lounge-ed8e4.firebasestorage.app",
-                messagingSenderId: "666831911373",
-                appId: "1:666831911373:web:286661e957635870201484",
-                measurementId: "G-TQBXTEW9FX"
+                apiKey: "AIzaSyAlpD6bZONYDtFTZWpSpbIyrrg_v8CxaM8",
+                authDomain: "lounge-bafa4.firebaseapp.com",
+                databaseURL: "https://lounge-bafa4-default-rtdb.europe-west1.firebasedatabase.app",
+                projectId: "lounge-bafa4",
+                storageBucket: "lounge-bafa4.firebasestorage.app",
+                messagingSenderId: "1001949611284",
+                appId: "1:1001949611284:web:1dd58560bf8cd315db2e01",
+                measurementId: "G-C2MKR5K5Z0"
             };
             if(typeof firebase!=='undefined'&&!firebase.apps.length){
                 firebase.initializeApp(firebaseConfig);
@@ -1503,7 +1505,6 @@
     }
     function initRealtimeSync(){
         if(!currentUserKey||!rtdb)return;
-        // استخدام on('value') خفيف ومباشر فقط لبيانات المستخدم لضمان السرعة القصوى وعدم الثقل
         rtdb.ref('users/'+currentUserKey).on('value',snap=>{
             if(snap.exists()){
                 userData=snap.val();
@@ -2183,7 +2184,7 @@
     function navigateBackFromProfile(){document.getElementById('userProfileModal').style.display='none';navigateTo('mainScreen');}
     function openVisitedUserProfileByKey(targetKey){
         if(!targetKey||!rtdb)return;visitedProfileTargetKey=targetKey;
-        rtdb.ref(`users/${targetKey}`).once('value').then(snap=>{
+        rtdb.ref(`users/${targetKey}`).once('value',snap=>{
             if(!snap.exists())return alert("❌ لم يتم العثور على المستخدم!");let u=snap.val();
             let vVerifiedIcon = u.isVerified ? `<span class="verified-badge-icon" title="موثق">✔</span>` : '';
             document.getElementById('visitedUserName').innerHTML=`${u.name||'مستخدم'} ${vVerifiedIcon}`;
