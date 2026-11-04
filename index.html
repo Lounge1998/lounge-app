@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق Lounge الرسمي</title>
-    <!-- ربط مكتبات الفايربيز الجديدة -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -22,7 +21,6 @@
 
         .badge-tag { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; box-shadow: 0 0 8px rgba(168,85,247,0.5); }
         .badge-tag.agent { background: linear-gradient(135deg, #eab308, #ca8a04); color: #000; }
-        .badge-tag.level { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
 
         .verified-badge-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: #a855f7; color: #fff; font-size: 10px; font-weight: bold; clip-path: polygon(50% 0%, 65% 15%, 85% 10%, 90% 30%, 105% 45%, 90% 60%, 85% 80%, 65% 85%, 50% 100%, 35% 85%, 15% 80%, 10% 60%, -5% 45%, 10% 30%, 15% 10%, 35% 15%); box-shadow: 0 0 6px rgba(168,85,247,0.8); margin-right: 4px; vertical-align: middle; }
 
@@ -98,11 +96,6 @@
         .profile-box{text-align:center;background:rgba(30,41,59,0.7);border:1px solid rgba(192,132,252,0.3);border-radius:16px;padding:15px;margin-bottom:10px}
         .large-avatar-container{position:relative;width:85px;height:85px;margin:0 auto 6px auto}
         .large-avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;display:block;background:#222;cursor:pointer}
-        .profile-gifts-section{margin-top:10px;text-align:right;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px}
-        .profile-gifts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:140px;overflow-y:auto;padding:2px}
-        .profile-gift-mini-card{background:rgba(15,23,42,0.7);border:1px solid rgba(192,132,252,0.3);border-radius:8px;padding:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;height:55px}
-        .profile-gift-mini-img{width:28px;height:28px;object-fit:contain}
-        .profile-gift-mini-count{font-size:9px;color:#c084fc;font-weight:bold;margin-top:2px}
         
         .wheel-box{width:140px;height:140px;border-radius:50%;border:6px solid #c084fc;margin:8px auto;position:relative;overflow:hidden;transition:transform 5s cubic-bezier(0.1,0.9,0.1,1);background:conic-gradient(#ef4444 0deg 60deg,#3b82f6 60deg 120deg,#10b981 120deg 180deg,#9333ea 180deg 240deg,#8b5cf6 240deg 300deg,#ec4899 300deg 360deg)}
         .wheel-pointer{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:15px solid #fff;margin:0 auto;margin-bottom:-6px;z-index:10;position:relative}
@@ -165,10 +158,6 @@
         .treasure-box-card { background: rgba(15,23,42,0.9); border: 1.5px solid rgba(234,179,8,0.5); border-radius: 14px; padding: 10px; margin-bottom: 8px; text-align: center; box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
         .treasure-icon { font-size: 32px; margin-bottom: 4px; animation: bounceTreasure 2s infinite ease-in-out; display: inline-block; }
         @keyframes bounceTreasure { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-
-        .donation-modal-card { background: url('43994.png') no-repeat center center; background-size: cover; border: 2px solid #eab308; border-radius: 20px; padding: 20px; text-align: center; position: relative; }
-        .donation-opt-btn { background: rgba(30,41,59,0.85); border: 2px solid rgba(234,179,8,0.5); border-radius: 12px; padding: 10px; font-size: 14px; font-weight: bold; color: #fde047; cursor: pointer; text-align: center; }
-        .donation-opt-btn.selected { border-color: #22c55e; background: rgba(16,185,129,0.3); box-shadow: 0 0 15px rgba(34,197,94,0.6); }
 
         .agent-modal-input-group input, .agent-modal-input-group select { padding: 6px !important; font-size: 10px !important; margin-bottom: 5px !important; }
         .agent-modal-input-group label { font-size: 9px !important; color: #cbd5e1; display: block; margin-bottom: 2px; }
@@ -396,18 +385,11 @@
             <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
         </div>
         <div class="card" style="text-align:right;background:rgba(30,41,59,0.7);border:1px solid rgba(192,132,252,0.4)">
-            <div class="shop-tabs" style="margin-bottom:10px">
-                <button class="shop-tab-btn active-gold" id="lbTab1" onclick="switchLeaderboardTab('gifts')">🎁 الشحن والهدايا</button>
-                <button class="shop-tab-btn" id="lbTab2" onclick="switchLeaderboardTab('clicking')">👆 ملوك التكبيس</button>
-                <button class="shop-tab-btn" id="lbTab3" onclick="switchLeaderboardTab('wheel')">🎡 رابحي العجلة</button>
-            </div>
-            <div id="lbContentGifts" class="lb-pane-content"><div id="leaderboardGiftsList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
-            <div id="lbContentClicking" class="lb-pane-content" style="display:none"><div id="leaderboardClickingList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
-            <div id="lbContentWheel" class="lb-pane-content" style="display:none"><div id="leaderboardWheelList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
+            <div style="font-size:12px;color:#c084fc;font-weight:bold;margin-bottom:8px;text-align:center;">👆 ملوك التكبيس الأسبوعي</div>
+            <div id="leaderboardClickingList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div>
         </div>
     </div>
 
-    <!-- متجر العدادات مع قسم إيداع USDT TRC20 والمرفق به ID المستخدم -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0;color:#c084fc;font-size:15px">🛒 متجر العدادات والإيداع</h3>
@@ -452,10 +434,6 @@
                 <div class="counter-row"><div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7">السعر: 6.000.000 نقطة</small></div><button class="action-btn btn-purple" style="width:auto;padding:4px 10px;font-size:10px" onclick="buyCounter(30000,6000000, 'عداد 30.000 نقطة يومياً')">شراء 🛒</button></div>
                 <div class="counter-row"><div><b>عداد 40.000 نقطة يومياً</b><br><small style="color:#a855f7">السعر: 8.000.000 نقطة</small></div><button class="action-btn btn-purple" style="width:auto;padding:4px 10px;font-size:10px" onclick="buyCounter(40000,8000000, 'عداد 40.000 نقطة يومياً')">شراء 🛒</button></div>
             </div>
-        </div>
-
-        <div style="margin-top:10px;">
-            <button class="action-btn btn-gold" style="padding:10px;font-size:12px;border-radius:14px;background:linear-gradient(135deg,#eab308,#ca8a04);color:#000;box-shadow:0 5px 15px rgba(234,179,8,0.4);" onclick="openDonationModal()">صندوق التبرعات</button>
         </div>
     </div>
 
@@ -503,11 +481,6 @@
                     <input type="number" id="agentChargeAmount" class="input-box" placeholder="عدد النقاط من الحقيبة">
                     <button class="action-btn btn-green" style="padding:6px;font-size:11px" onclick="agentTransferPoints()">شحن النقاط للمستخدم 🚀</button>
                 </div>
-            </div>
-
-            <div class="profile-gifts-section">
-                <h4 style="margin:0 0 6px 0;color:#c084fc;font-size:12px">🎁 هدايا الملف الشخصي المستلمة</h4>
-                <div id="profileReceivedGiftsGrid" class="profile-gifts-grid"><div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:10px">لا توجد هدايا مستلمة بعد</div></div>
             </div>
         </div>
     </div>
@@ -663,32 +636,6 @@
     </div>
 </div>
 
-<div id="donationModal" class="modal">
-    <div class="modal-content donation-modal-card">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
-            <button style="background:rgba(0,0,0,0.6);border:none;color:#fff;font-size:16px;cursor:pointer;border-radius:50%;width:26px;height:26px;" onclick="closeDonationModal()">✖</button>
-        </div>
-        <div style="font-size:18px;font-weight:900;color:#fde047;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:8px;">صندوق التبرعات</div>
-        
-        <div style="background:rgba(15,23,42,0.85); border:1px solid rgba(234,179,8,0.5); border-radius:12px; padding:8px; margin-bottom:12px; text-align:center;">
-            <div style="font-size:10px; color:#94a3b8;">إجمالي التبرعات الحالية في الصندوق:</div>
-            <div style="font-size:16px; font-weight:900; color:#34d399; margin-top:2px;" id="totalDonationsDisplay">0 🪙</div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
-            <div class="donation-opt-btn" id="donOpt150" onclick="selectDonationAmount(150, this)">🪙 150</div>
-            <div class="donation-opt-btn" id="donOpt250" onclick="selectDonationAmount(250, this)">🪙 250</div>
-            <div class="donation-opt-btn" id="donOpt500" onclick="selectDonationAmount(500, this)">🪙 500</div>
-        </div>
-
-        <button class="action-btn" style="background:linear-gradient(135deg,#facc15,#eab308);color:#000;font-size:14px;padding:9px;border-radius:12px;box-shadow:0 4px 15px rgba(234,179,8,0.6);font-weight:900;margin-bottom:8px;" onclick="confirmDonation()">حسناً</button>
-
-        <div id="adminDonationResetArea" style="display:none; margin-top:6px; border-top:1px dashed rgba(255,255,255,0.2); padding-top:6px;">
-            <button class="action-btn" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:10px; padding:6px; border-radius:8px;" onclick="adminResetDonationsCounter()">🗑️ تصفير عداد التبرعات (خاص بالإدارة)</button>
-        </div>
-    </div>
-</div>
-
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right;max-width:390px;padding:8px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
@@ -783,10 +730,6 @@
         
         <div id="adminDirectAgentControlArea" style="margin-top:8px;display:none"></div>
 
-        <div class="profile-gifts-section" style="margin-top:8px">
-            <h4 style="margin:0 0 4px 0;color:#c084fc;font-size:11px">🎁 هدايا الملف الشخصي</h4>
-            <div id="visitedReceivedGiftsGrid" class="profile-gifts-grid"><div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:6px">لا توجد هدايا مستلمة</div></div>
-        </div>
         <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
             <button id="visitedAddFriendBtn" class="action-btn btn-blue" style="padding:6px;font-size:11px;display:none" onclick="sendFriendRequestFromVisitedProfile()">إضافة صديق ➕</button>
             <button id="roomOwnerBanBtn" class="action-btn" style="background:#ef4444;color:#fff;padding:6px;font-size:11px;display:none" onclick="banUserFromRoom()">حظر من الغرفة 🚫</button>
@@ -812,32 +755,6 @@
         <label style="font-size:11px;color:#cbd5e1;display:block;margin-bottom:4px;margin-top:8px">خلفية الدردشة للغرفة:</label>
         <input type="file" id="roomBgInput" accept="image/*" class="input-box" onchange="previewRoomBg(event)">
         <button class="action-btn btn-purple" style="margin-top:10px" onclick="saveRoomCustomization()">حفظ التخصيص وتطبيق 💾</button>
-    </div>
-</div>
-
-<div id="adminTreasureEditModal" class="modal">
-    <div class="modal-content" style="text-align:right;max-width:390px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <h4 style="margin:0;color:#eab308;font-size:14px">👑 تعديل صناديق كنز لاونج (إدارة)</h4>
-            <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeAdminTreasureEditModal()">✖</button>
-        </div>
-        
-        <div style="font-size:11px;color:#cbd5e1;margin-bottom:4px">الصندوق الأول:</div>
-        <input type="text" id="quickBox1Title" class="input-box" placeholder="عنوان الصندوق" style="margin-bottom:2px;padding:6px;font-size:11px">
-        <input type="number" id="quickBox1Price" class="input-box" placeholder="السعر بالنقاط" style="margin-bottom:2px;padding:6px;font-size:11px">
-        <input type="number" id="quickBox1Reward" class="input-box" placeholder="النقاط المخفية بالداخل" style="margin-bottom:8px;padding:6px;font-size:11px">
-
-        <div style="font-size:11px;color:#cbd5e1;margin-bottom:4px">الصندوق الثاني:</div>
-        <input type="text" id="quickBox2Title" class="input-box" placeholder="عنوان الصندوق" style="margin-bottom:2px;padding:6px;font-size:11px">
-        <input type="number" id="quickBox2Price" class="input-box" placeholder="السعر بالنقاط" style="margin-bottom:2px;padding:6px;font-size:11px">
-        <input type="number" id="quickBox2Reward" class="input-box" placeholder="النقاط المخفية بالداخل" style="margin-bottom:8px;padding:6px;font-size:11px">
-
-        <div style="font-size:11px;color:#cbd5e1;margin-bottom:4px">الصندوق الثالث:</div>
-        <input type="text" id="quickBox3Title" class="input-box" placeholder="عنوان الصندوق" style="margin-bottom:2px;padding:6px;font-size:11px">
-        <input type="number" id="quickBox3Price" class="input-box" placeholder="السعر بالنقاط" style="margin-bottom:2px;padding:6px;font-size:11px">
-        <input type="number" id="quickBox3Reward" class="input-box" placeholder="النقاط المخفية بالداخل" style="margin-bottom:10px;padding:6px;font-size:11px">
-
-        <button class="action-btn btn-gold" onclick="saveQuickTreasureBoxes()">حفظ وتحديث الصناديق فوراً 💾</button>
     </div>
 </div>
 
@@ -959,15 +876,13 @@
 
 <script>
     let currentEmail='',currentUserKey='',rtdb=null,auth=null;
-    let userData={points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',hasCreatedRoom:false,createdRoomId:'',lastWithdrawTime:0,isBanned:false,whatsapp:'',withdrawCount:0,isAgent:false,agentTelegram:'',agentWhatsapp:'',agentBag:0,interactionScore:0,gameWins:0,userClicksCount:0,isVerified:false,verificationPhone:'',verificationStatus:'none'};
+    let userData={points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',hasCreatedRoom:false,createdRoomId:'',lastWithdrawTime:0,isBanned:false,whatsapp:'',withdrawCount:0,isAgent:false,agentTelegram:'',agentWhatsapp:'',agentBag:0,gameWins:0,userClicksCount:0,isVerified:false,verificationPhone:'',verificationStatus:'none'};
     let base64Image='',activeChatFriendKey='',activeChatFriendName='',visitedProfileTargetKey='',timerInterval=null;
     let isolatedActiveRoomId='',currentRoomOccupantsCount=0,activeRoomCreatorKey='',globalAppSettings={withdrawLocked:false,dailyCounterLocked:false,tickerText:'أهلاً بكم في تطبيق Lounge الرسمي!'};
     let newRoomAvatarBase64='',newRoomBgBase64='';
     let currentReplyTarget=null,pendingSelectedGift=null,selectedTargetUserKey='all',selectedTargetUserName='الكل (عام)',totalWheelDegrees=0;
     let globalRoomsList = [];
     let hFront64='', hBack64='', nFront64='', nBack64='', agentAvatar64='';
-    let selectedDonationAmountValue = 150; 
-    let globalTotalDonations = 0;
     let pendingBuyItem = null;
     let selectedWithdrawMethodName = 'زين كاش (Zain Cash)';
 
@@ -1173,8 +1088,6 @@
             up[`users/${sellerKey}/activeCounterVal`] = 0;
             up[`users/${sellerKey}/activeCounter`] = 'لا يوجد (تم بيع العداد)';
 
-            addInteractionScore(20);
-
             rtdb.ref().update(up).then(()=>{
                 rtdb.ref(`notifications/${sellerKey}`).push({
                     text: `🎉 مبروك! تم بيع عدادك (${counterVal.toLocaleString()} نقطة يومياً) بنجاح وإضافة (${price.toLocaleString()} نقطة) لرصيدك!`,
@@ -1189,55 +1102,6 @@
                     alert("🎉 مبروك أسطورة! تمت عملية الشراء بنجاح تام!");
                 });
             });
-        });
-    }
-
-    function openDonationModal(){
-        document.getElementById('donationModal').style.display = 'flex';
-        let firstBtn = document.getElementById('donOpt150');
-        if(firstBtn) selectDonationAmount(150, firstBtn);
-
-        let resetArea = document.getElementById('adminDonationResetArea');
-        if(resetArea){
-            if(currentUserKey === 'msaftwtn_gmail_com' || currentEmail === 'msaftwtn@gmail.com' || userData.customId === '1'){
-                resetArea.style.display = 'block';
-            } else {
-                resetArea.style.display = 'none';
-            }
-        }
-    }
-    function closeDonationModal(){ document.getElementById('donationModal').style.display = 'none'; }
-    function selectDonationAmount(amt, btnElem){
-        selectedDonationAmountValue = amt;
-        document.querySelectorAll('.donation-opt-btn').forEach(b => b.classList.remove('selected'));
-        if(btnElem) btnElem.classList.add('selected');
-    }
-    function confirmDonation(){
-        let currentPts = userData.points || 0;
-        if(currentPts < selectedDonationAmountValue){
-            return alert(`❌ نقاطك الحالية (${currentPts.toLocaleString()} نقطة) لا تكفي للتبرع بهذا المبلغ (${selectedDonationAmountValue} نقطة)!`);
-        }
-
-        userData.points = currentPts - selectedDonationAmountValue;
-        addInteractionScore(10);
-
-        rtdb.ref('global_donations_total').transaction(current => {
-            return (current || 0) + selectedDonationAmountValue;
-        }).then(()=>{
-            saveToDB().then(()=>{
-                updateUI();
-                closeDonationModal();
-                alert(`✅ تم التبرع بنجاح بـ (${selectedDonationAmountValue} نقطة)! شكراً لعطائك 💖`);
-            });
-        });
-    }
-
-    function adminResetDonationsCounter(){
-        if(currentUserKey !== 'msaftwtn_gmail_com' && currentEmail !== 'msaftwtn@gmail.com' && userData.customId !== '1') return alert("⚠️ غير مسموح.");
-        if(!confirm("⚠️ هل أنت متأكد من تصفير عداد التبرعات العام وإرجاعه إلى الصفر؟")) return;
-
-        rtdb.ref('global_donations_total').set(0).then(()=>{
-            alert("🗑️ تم تصفير عداد التبرعات العام بنجاح!");
         });
     }
 
@@ -1263,7 +1127,6 @@
             userData.userClicksCount = 0;
             userData.points = (userData.points || 0) + 100;
             userData.gems = (userData.gems || 0) + 100;
-            addInteractionScore(20);
             
             saveToDB().then(()=>{
                 updateUI();
@@ -1352,7 +1215,6 @@
         }
 
         currentQuestionIndex++;
-        addInteractionScore(2);
 
         setTimeout(() => {
             if (currentQuestionIndex >= 100 || currentQuestionIndex >= currentDailyQuestions.length) {
@@ -1361,7 +1223,6 @@
                 localStorage.setItem('lounge_quiz_completed_' + currentUserKey, todayStr);
 
                 userData.points = (userData.points || 0) + 50;
-                addInteractionScore(20);
                 saveToDB().then(() => {
                     updateUI();
                     document.getElementById('earned-points').innerText = "50";
@@ -1387,28 +1248,18 @@
         if (qBox) qBox.innerText = "انتهى التحدي اليومي. نراكم غداً بمزيد من الأسئلة المتجددة!";
     }
 
-    function addInteractionScore(amount) {
-        userData.interactionScore = (userData.interactionScore || 0) + amount;
-        saveToDB();
-    }
-    function getUserLevel(score) {
-        let lvl = Math.floor((score || 0) / 100) + 1;
-        return lvl > 50 ? 50 : lvl;
-    }
-
-    /* --- دمج إعدادات ومفاتيح مشروع الفايربيز الجديد الخاص بك هنا --- */
     window.addEventListener('load',()=>{
         initLoungeTickerAnimation();
         try{
             const firebaseConfig={
-                apiKey: "AIzaSyAlpD6bZONYDtFTZWpSpbIyrrg_v8CxaM8",
-                authDomain: "lounge-bafa4.firebaseapp.com",
-                databaseURL: "https://lounge-bafa4-default-rtdb.europe-west1.firebasedatabase.app",
-                projectId: "lounge-bafa4",
-                storageBucket: "lounge-bafa4.firebasestorage.app",
-                messagingSenderId: "1001949611284",
-                appId: "1:1001949611284:web:1dd58560bf8cd315db2e01",
-                measurementId: "G-C2MKR5K5Z0"
+                apiKey: "AIzaSyDtafaH13sD8fHRNoyzib_5aqLctsuMnY8",
+                authDomain: "lounge-ed8e4.firebaseapp.com",
+                databaseURL: "https://lounge-ed8e4-default-rtdb.firebaseio.com",
+                projectId: "lounge-ed8e4",
+                storageBucket: "lounge-ed8e4.firebasestorage.app",
+                messagingSenderId: "666831911373",
+                appId: "1:666831911373:web:286661e957635870201484",
+                measurementId: "G-TQBXTEW9FX"
             };
             if(typeof firebase!=='undefined'&&!firebase.apps.length){
                 firebase.initializeApp(firebaseConfig);
@@ -1439,7 +1290,6 @@
         if(screenId==='agentsScreen')loadApprovedAgentsList();
         if(screenId==='counterTradingScreen')loadTradingCountersMarket();
         if(screenId==='profileScreen'){
-            loadProfileReceivedGifts(currentUserKey,'profileReceivedGiftsGrid');
             let b=document.getElementById('profileBioInput');if(b)document.getElementById('bioCounter').innerText=`${b.value.length} / 60`;
             updateVerificationStatusUI();
         }
@@ -1466,7 +1316,6 @@
                 currentEmail=email;try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
                 if(email==='msaftwtn@gmail.com'&&uDat.customId!=='1')rtdb.ref('users/'+currentUserKey).update({customId:'1'});
                 
-                // النظام الصارم: منع فتح حسابين على نفس الجهاز
                 if(email!=='msaftwtn@gmail.com'){
                     let devKey=localStorage.getItem('dinarDeviceUuid');
                     if(!devKey){devKey='dev_'+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem('dinarDeviceUuid',devKey);}
@@ -1490,7 +1339,7 @@
         rtdb.ref('users/'+currentUserKey).once('value').then(check=>{
             if(check.exists()){btn.disabled=false;btn.innerText="تأكيد الحساب ✨";return alert("⚠️ مسجل سابقاً!");}
             let defaultName=email.split('@')[0],assignedId=(email==='msaftwtn@gmail.com')?'1':Math.floor(100000+Math.random()*900000).toString();
-            const newUser={name:defaultName,email:email,password:pass,customId:assignedId,points:0,gems:0,bio:'',lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,hasCreatedRoom:false,createdRoomId:'',lastWithdrawTime:0,isBanned:false,whatsapp:'',weeklyGiftsSent:0,weeklyWheelPoints:0,withdrawCount:0,isAgent:false,agentTelegram:'',agentWhatsapp:'',agentBag:0,agentProvince:'',agentAvatar:'',interactionScore:0,gameWins:0,userClicksCount:0,isVerified:false,verificationPhone:'',verificationStatus:'none'};
+            const newUser={name:defaultName,email:email,password:pass,customId:assignedId,points:0,gems:0,bio:'',lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,hasCreatedRoom:false,createdRoomId:'',lastWithdrawTime:0,isBanned:false,whatsapp:'',withdrawCount:0,isAgent:false,agentTelegram:'',agentWhatsapp:'',agentBag:0,agentProvince:'',agentAvatar:'',gameWins:0,userClicksCount:0,isVerified:false,verificationPhone:'',verificationStatus:'none'};
             rtdb.ref('users/'+currentUserKey).set(newUser).then(()=>{
                 btn.disabled=false;btn.innerText="تأكيد الحساب ✨";currentEmail=email;
                 try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
@@ -1526,12 +1375,6 @@
             if(tickerElem && globalAppSettings.tickerText) tickerElem.innerText = globalAppSettings.tickerText;
         });
 
-        rtdb.ref('global_donations_total').on('value', snap=>{
-            globalTotalDonations = snap.exists() ? snap.val() : 0;
-            let donDisp = document.getElementById('totalDonationsDisplay');
-            if(donDisp) donDisp.innerText = `${globalTotalDonations.toLocaleString()} 🪙`;
-        });
-
         loadNotifications();loadFriendSystem();
     }
     function updateUI(){
@@ -1558,13 +1401,7 @@
             clickDisplay.innerText = `العداد اللحظي: ${curr.toLocaleString()} / 500,000 تكبيسة`;
         }
 
-        let pts = userData.points || 0;
-        let lvlName = "مبتدئ 🌟";
-        if(pts >= 100000) lvlName = "أسطورة 👑";
-        else if(pts >= 20000) lvlName = "محترف 🔥";
-
-        let userLvl = getUserLevel(userData.interactionScore);
-        let badgeHtml = `<span class="badge-tag">${lvlName}</span> <span class="badge-tag level">Lv. ${userLvl} ⚡</span>`;
+        let badgeHtml = '';
         if(userData.isAgent) badgeHtml += ` <span class="badge-tag agent">وكيل معتمد 💼</span>`;
         
         let hdrBadge = document.getElementById('userHeaderBadgeArea');
@@ -1702,19 +1539,12 @@
                 box3: { title: "الصندوق الذهبي الملكي النادر", price: 4000, reward: 10000 }
             };
 
-            let isAdmin = (currentUserKey === 'msaftwtn_gmail_com' || currentEmail === 'msaftwtn@gmail.com' || userData.customId === '1');
-
             let html = '';
             ['box1', 'box2', 'box3'].forEach((bKey, idx)=>{
                 let b = boxes[bKey] || { title: "صندوق الحظ", price: 1000, reward: 2000 };
                 let icons = ["🥉", "🥈", "👑"];
                 
-                let actionButtonHtml = '';
-                if(isAdmin){
-                    actionButtonHtml = `<button class="action-btn btn-purple" style="padding:6px" onclick="openAdminTreasureEditModal()">تعديل الصندوق ⚙️</button>`;
-                } else {
-                    actionButtonHtml = `<button class="action-btn btn-gold" style="padding:6px" onclick="openTreasureBox('${bKey}', ${b.price}, ${b.reward}, '${b.title}')">فتح الصندوق 🎁</button>`;
-                }
+                let actionButtonHtml = `<button class="action-btn btn-gold" style="padding:6px" onclick="openTreasureBox('${bKey}', ${b.price}, ${b.reward}, '${b.title}')">فتح الصندوق 🎁</button>`;
 
                 html += `<div class="treasure-card treasure-box-card">
                     <div class="treasure-icon">${icons[idx]}</div>
@@ -1728,59 +1558,6 @@
         });
     }
 
-    function openAdminTreasureEditModal(){
-        if(currentUserKey !== 'msaftwtn_gmail_com' && currentEmail !== 'msaftwtn@gmail.com' && userData.customId !== '1') return alert("⚠️ غير مسموح.");
-        rtdb.ref('treasure_boxes').once('value').then(snap=>{
-            let b = snap.exists() ? snap.val() : {
-                box1: { title: "الصندوق البرونزي الحماسي", price: 500, reward: 1200 },
-                box2: { title: "الصندوق الفضي السريع", price: 1500, reward: 3500 },
-                box3: { title: "الصندوق الذهبي الملكي النادر", price: 4000, reward: 10000 }
-            };
-            document.getElementById('quickBox1Title').value = b.box1.title;
-            document.getElementById('quickBox1Price').value = b.box1.price;
-            document.getElementById('quickBox1Reward').value = b.box1.reward;
-
-            document.getElementById('quickBox2Title').value = b.box2.title;
-            document.getElementById('quickBox2Price').value = b.box2.price;
-            document.getElementById('quickBox2Reward').value = b.box2.reward;
-
-            document.getElementById('quickBox3Title').value = b.box3.title;
-            document.getElementById('quickBox3Price').value = b.box3.price;
-            document.getElementById('quickBox3Reward').value = b.box3.reward;
-
-            document.getElementById('adminTreasureEditModal').style.display = 'flex';
-        });
-    }
-
-    function closeAdminTreasureEditModal(){ document.getElementById('adminTreasureEditModal').style.display = 'none'; }
-
-    function saveQuickTreasureBoxes(){
-        let b1t = document.getElementById('quickBox1Title').value.trim();
-        let b1p = parseInt(document.getElementById('quickBox1Price').value);
-        let b1r = parseInt(document.getElementById('quickBox1Reward').value);
-
-        let b2t = document.getElementById('quickBox2Title').value.trim();
-        let b2p = parseInt(document.getElementById('quickBox2Price').value);
-        let b2r = parseInt(document.getElementById('quickBox2Reward').value);
-
-        let b3t = document.getElementById('quickBox3Title').value.trim();
-        let b3p = parseInt(document.getElementById('quickBox3Price').value);
-        let b3r = parseInt(document.getElementById('quickBox3Reward').value);
-
-        if(!b1t || isNaN(b1p) || isNaN(b1r) || !b2t || isNaN(b2p) || isNaN(b2r) || !b3t || isNaN(b3p) || isNaN(b3r)){
-            return alert("⚠️ يرجى ملء كافة حقول الصناديق الثلاثة بشكل صحيح!");
-        }
-
-        rtdb.ref('treasure_boxes').set({
-            box1: { title: b1t, price: b1p, reward: b1r },
-            box2: { title: b2t, price: b2p, reward: b2r },
-            box3: { title: b3t, price: b3p, reward: b3r }
-        }).then(()=>{
-            closeAdminTreasureEditModal();
-            alert("✅ تم تعديل وحفظ صناديق الكنز بنجاح تام!");
-        });
-    }
-
     function openTreasureBox(boxKey, price, hiddenReward, boxTitle){
         let currentPts = userData.points || 0;
         if(currentPts < price) {
@@ -1791,7 +1568,6 @@
 
         userData.points = currentPts - price;
         userData.points += hiddenReward;
-        addInteractionScore(15);
 
         saveToDB().then(()=>{
             updateUI();
@@ -1813,7 +1589,6 @@
             if(!targetKey) return alert("❌ لم يتم العثور على هذا المستخدم!");
 
             userData.agentBag = currentBag - amt;
-            addInteractionScore(15);
             saveToDB().then(()=>{
                 rtdb.ref(`users/${targetKey}`).once('value').then(ts=>{
                     let oldPts = ts.val().points || 0;
@@ -1836,7 +1611,6 @@
         userData.points-=price;
         userData.activeCounterVal=(userData.activeCounterVal||0)+pts;
         userData.activeCounter=counterName;
-        addInteractionScore(30);
         saveToDB().then(()=>{updateUI();alert(`🎉 مبروك! تم شراء العداد وأصبح إجمالي إنتاجك (${userData.activeCounterVal.toLocaleString()} نقطة يومياً).`);});
     }
     
@@ -1993,14 +1767,12 @@
         userData.points=(userData.points||0)+rPts;
         userData.gems=(userData.gems||0)+500;
         userData.lastSpinTime=now;
-        addInteractionScore(15);
         saveToDB().then(()=>{updateUI();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) و 500 جوهرة 💎 بنجاح.`);});
     }
 
     function convertGemsToPoints(){
         if((userData.gems||0)<5000)return alert(`⚠️ رصيدك (${userData.gems}) لا يكفي. يلزم 5.000 جوهرة لتبديلها بـ 100 نقطة!`);
         userData.gems-=5000;userData.points=(userData.points||0)+100;
-        addInteractionScore(10);
         saveToDB().then(()=>{updateUI();alert('🎉 تم تبديل 5.000 جوهرة بـ 100 نقطة بنجاح.');});
     }
 
@@ -2034,19 +1806,11 @@
         let wheel=document.getElementById('wheelGraphic'),prizes=[0,5,10,15,20,25,50],idx=Math.floor(Math.random()*7),prize=prizes[idx];
         totalWheelDegrees+=3600+(idx*51.4)+25;wheel.style.transform=`rotate(${totalWheelDegrees}deg)`;
         setTimeout(()=>{
-            userData.points=(userData.points||0)+prize;userData.weeklyWheelPoints=(userData.weeklyWheelPoints||0)+prize;
-            addInteractionScore(5);
+            userData.points=(userData.points||0)+prize;
             saveToDB().then(()=>{msg.innerText=`🎉 مبروك! حصلت على ${prize} نقطة بنجاح!`;isSpinning=false;spinBtn.disabled=false;updateUI();});
         },5000);
     }
-    function switchLeaderboardTab(tab){
-        document.getElementById('lbTab1').className="shop-tab-btn "+(tab==='gifts'?"active-gold":"");
-        document.getElementById('lbTab2').className="shop-tab-btn "+(tab==='clicking'?"active-gold":"");
-        document.getElementById('lbTab3').className="shop-tab-btn "+(tab==='wheel'?"active-gold":"");
-        document.getElementById('lbContentGifts').style.display=tab==='gifts'?'block':'none';
-        document.getElementById('lbContentClicking').style.display=tab==='clicking'?'block':'none';
-        document.getElementById('lbContentWheel').style.display=tab==='wheel'?'block':'none';
-    }
+
     function loadLeaderboardData(){
         rtdb.ref('users').once('value').then(snap=>{
             if(!snap.exists())return;let users=[];
@@ -2057,16 +1821,13 @@
                     name:d.name||'مستخدم',
                     customId:d.customId||'---',
                     avatar:d.avatar||'',
-                    gifts:d.weeklyGiftsSent||0,
-                    clicking:d.userClicksCount||0,
-                    wheel:d.weeklyWheelPoints||0
+                    clicking:d.userClicksCount||0
                 });
             });
-            renderLeaderboardList('leaderboardGiftsList',[...users].sort((a,b)=>b.gifts-a.gifts).slice(0,10),'gifts','نقطة مصروفة');
             renderLeaderboardList('leaderboardClickingList',[...users].sort((a,b)=>b.clicking-a.clicking).slice(0,10),'clicking','تكبيسة');
-            renderLeaderboardList('leaderboardWheelList',[...users].sort((a,b)=>b.wheel-a.wheel).slice(0,10),'wheel','نقطة مربوحة');
         });
     }
+
     function renderLeaderboardList(id,list,key,unit){
         let c=document.getElementById(id);if(!c)return;
         if(list.length===0||list[0][key]===0){c.innerHTML="<div style='text-align:center;padding:15px;color:#94a3b8'>لا توجد بيانات مسجلة.</div>";return;}
@@ -2083,6 +1844,7 @@
         });
         c.innerHTML=html;
     }
+
     function loadNotifications(){
         if(!currentUserKey||!rtdb)return;
         rtdb.ref(`notifications/${currentUserKey}`).once('value',snap=>{
@@ -2192,13 +1954,7 @@
             document.getElementById('visitedUserAvatar').src=u.avatar?u.avatar:'https://via.placeholder.com/85';
             document.getElementById('visitedUserBio').innerText=u.bio?u.bio:'لا يوجد بايو حالياً.';
 
-            let vPts = u.points || 0;
-            let vLvl = "مبتدئ 🌟";
-            if(vPts >= 100000) vLvl = "أسطورة 👑";
-            else if(vPts >= 20000) vLvl = "محترف 🔥";
-
-            let targetUserLvl = getUserLevel(u.interactionScore);
-            let vBadgeHtml = `<span class="badge-tag">${vLvl}</span> <span class="badge-tag level">Lv. ${targetUserLvl} ⚡</span>`;
+            let vBadgeHtml = '';
             if(u.isAgent) vBadgeHtml += ` <span class="badge-tag agent">وكيل معتمد 💼</span>`;
             document.getElementById('visitedUserBadgeArea').innerHTML = vBadgeHtml;
 
@@ -2210,7 +1966,6 @@
                 } else { adminDirectControl.style.display = 'none'; }
             } else { adminDirectControl.style.display = 'none'; }
 
-            loadProfileReceivedGifts(targetKey,'visitedReceivedGiftsGrid');
             let addB=document.getElementById('visitedAddFriendBtn'),roomA=document.getElementById('visitedUserRoomArea'),noRoomA=document.getElementById('visitedUserNoRoom'),banB=document.getElementById('roomOwnerBanBtn');
             if(isolatedActiveRoomId&&currentUserKey===activeRoomCreatorKey&&targetKey!==currentUserKey)banB.style.display='inline-block';else banB.style.display='none';
             rtdb.ref(`friends/${currentUserKey}/${targetKey}`).once('value').then(fs=>{addB.style.display=(fs.exists()||targetKey===currentUserKey)?'none':'inline-block';});
@@ -2238,19 +1993,6 @@
 
     function openVisitedUserProfileByKeyDirect(tk){openVisitedUserProfileByKey(tk);}
     function closeUserProfileModal(){document.getElementById('userProfileModal').style.display='none';visitedProfileTargetKey='';}
-    function loadProfileReceivedGifts(userKey,containerId){
-        let gC=document.getElementById(containerId);if(!gC)return;
-        rtdb.ref(`profile_gifts/${userKey}`).once('value',snap=>{
-            if(!snap.exists()){gC.innerHTML=`<div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:10px">لا توجد هدايا مستلمة بعد</div>`;return;}
-            let h='';snap.forEach(g=>{
-                let gd=g.val();
-                let displayImg = (gd.giftIcon==='palace') ? '🏰' : (gd.giftIcon==='plane' ? '✈️' : `<img src="${gd.giftIcon}" class="profile-gift-mini-img" alt="هدية">`);
-                let isEmoji = (gd.giftIcon==='palace'||gd.giftIcon==='plane');
-                h+=`<div class="profile-gift-mini-card" title="${gd.giftName}">${isEmoji ? `<span style="font-size:24px">${displayImg}</span>` : displayImg}<span class="profile-gift-mini-count">x${gd.count}</span></div>`;
-            });
-            gC.innerHTML=h;
-        });
-    }
     function banUserFromRoom(){
         if(!isolatedActiveRoomId||currentUserKey!==activeRoomCreatorKey||!visitedProfileTargetKey||!confirm("⚠️ حظر المستخدم من الغرفة؟"))return;
         rtdb.ref(`room_bans/${isolatedActiveRoomId}/${visitedProfileTargetKey}`).set({bannedUntil:Date.now()+(24*60*60*1000)}).then(()=>{closeUserProfileModal();alert("🚫 تم الحظر بنجاح.");});
@@ -2259,13 +2001,12 @@
     function deleteFriendConnection(){if(!activeChatFriendKey||!confirm("⚠️ حذف الصديق؟"))return;rtdb.ref(`friends/${currentUserKey}/${activeChatFriendKey}`).remove();rtdb.ref(`friends/${activeChatFriendKey}/${currentUserKey}`).remove();closeChatModal();loadFriendSystem();alert("❌ تم الحذف.");}
     function sendChatMessage(){
         let txt=document.getElementById('chatInputMsg').value.trim();if(!txt||!activeChatFriendKey)return;
-        addInteractionScore(1);
         rtdb.ref(`chats/${[currentUserKey,activeChatFriendKey].sort().join('_')}`).push({sender:currentUserKey,senderName:userData.name,text:txt,timestamp:Date.now()});
         document.getElementById('chatInputMsg').value='';
     }
     function sendChatImage(e){
         const f=e.target.files[0];if(!f||!activeChatFriendKey)return;const rd=new FileReader();
-        rd.onload=ce=>{let img=ce.target.result,chatId=[currentUserKey,activeChatFriendKey].sort().join('_');addInteractionScore(2);rtdb.ref(`chats/${chatId}`).push({sender:currentUserKey,senderName:userData.name,image:img,timestamp:Date.now()});};
+        rd.onload=ce=>{let img=ce.target.result,chatId=[currentUserKey,activeChatFriendKey].sort().join('_');rtdb.ref(`chats/${chatId}`).push({sender:currentUserKey,senderName:userData.name,image:img,timestamp:Date.now()});};
         rd.readAsDataURL(f);e.target.value='';
     }
     function triggerImageUpload(){document.getElementById('hiddenImageInput').click();}
@@ -2274,7 +2015,6 @@
     function saveProfileData(){
         let n=document.getElementById('profileNameInput').value.trim(),b=document.getElementById('profileBioInput').value.trim();
         if(n)userData.name=n;if(b!==undefined)userData.bio=b.substring(0,60);if(base64Image)userData.avatar=base64Image;
-        addInteractionScore(5);
         saveToDB().then(()=>{base64Image='';updateUI();alert('✅ تم حفظ التعديلات بنجاح!');}).catch(()=>alert('❌ حدث خطأ، حاول مجدداً.'));
     }
 
@@ -2284,11 +2024,11 @@
         }
         if(currentUserKey !== 'msaftwtn_gmail_com' && userData.lastWithdrawTime) {
             let now = Date.now();
-            let tenDaysMs = 10 * 24 * 60 * 60 * 1000;
+            let fortyEightHoursMs = 48 * 60 * 60 * 1000;
             let elapsed = now - userData.lastWithdrawTime;
-            if(elapsed < tenDaysMs) {
-                let remainingDays = Math.ceil((tenDaysMs - elapsed) / (1000 * 60 * 60 * 24));
-                return alert(`⚠️ عذراً، يجب انقضاء 10 أيام كاملة بين كل طلب سحب وآخر. متبقي لديك حوالي ${remainingDays} أيام.`);
+            if(elapsed < fortyEightHoursMs) {
+                let remainingHours = Math.ceil((fortyEightHoursMs - elapsed) / (1000 * 60 * 60));
+                return alert(`⚠️ عذراً، مسموح لك بالسحب مرة واحدة كل 48 ساعة. متبقي لديك حوالي ${remainingHours} ساعة.`);
             }
         }
         document.getElementById('withdrawModal').style.display='flex';
@@ -2306,7 +2046,6 @@
         if((userData.points||0)<10000)return alert('❌ رصيدك الحالي من النقاط لا يكفي لتقديم طلب السحب!');
         
         userData.withdrawCount = (userData.withdrawCount || 0) + 1;
-        addInteractionScore(10);
 
         rtdb.ref(`admin_withdrawals`).push({
             userKey: currentUserKey,
@@ -2566,7 +2305,7 @@
         alert("🗑️ تم الحذف.");
     }
     function checkAndEnterRoom(id,ck,name){
-        rtdb.ref(`room_bans/${id}/${currentUserKey}`).once('value').then(snap=>{
+        rtdb.ref(`room_bans/${id}/${currentUserKey}`).once('value',snap=>{
             if(snap.exists()){
                 let b=snap.val(),now=Date.now();
                 if(now<b.bannedUntil)return alert(`🚫 أنت محظور من هذه الغرفة لمدة ${Math.ceil((b.bannedUntil-now)/(1000*60*60))} ساعة.`);
@@ -2581,7 +2320,6 @@
         let ref=rtdb.ref('public_rooms').push(),id=ref.key;
         ref.set({id:id,name:n,creatorKey:currentUserKey,creatorName:userData.name,avatar:'',background:'',createdAt:Date.now()}).then(()=>{
             userData.hasCreatedRoom=true;userData.createdRoomId=id;
-            addInteractionScore(10);
             saveToDB().then(()=>{document.getElementById('isolatedRoomNameInput').value='';alert('✨ تم إنشاء غرفتك بنجاح!');});
         });
     }
@@ -2673,7 +2411,6 @@
         let txt=document.getElementById('isolatedMsgInput').value.trim();if(!txt||!isolatedActiveRoomId)return;
         let obj={sender:currentUserKey,senderName:userData.name,text:txt,isVerified:!!userData.isVerified,timestamp:Date.now()};
         if(currentReplyTarget)obj.replyTo={senderName:currentReplyTarget.senderName,text:currentReplyTarget.text};
-        addInteractionScore(1);
         rtdb.ref(`room_messages/${isolatedActiveRoomId}`).push(obj);
         document.getElementById('isolatedMsgInput').value='';cancelReplyMode();
     }
@@ -2745,22 +2482,16 @@
                     let totalCost=cost*otherUsers.length;
                     if(curPts<totalCost)return alert(`❌ نقاطك غير كافية! التكلفة الإجمالية: ${totalCost} نقطة.`);
                     
-                    let up={};up[`users/${currentUserKey}/points`]=curPts-totalCost;up[`users/${currentUserKey}/weeklyGiftsSent`]=(sDat.weeklyGiftsSent||0)+totalCost;
+                    let up={};up[`users/${currentUserKey}/points`]=curPts-totalCost;
                     
                     let promises=[];
                     otherUsers.forEach(uk=>{
                         promises.push(rtdb.ref(`users/${uk}`).once('value').then(ts=>{
-                            if(ts.exists()){up[`users/${uk}/points`]=(ts.val().points||0)+Math.floor(cost*0.60);}
-                            let gk=gName.replace(/[^a-zA-Z0-9]/g,'_');
-                            return rtdb.ref(`profile_gifts/${uk}/${gk}`).once('value').then(gs=>{
-                                let cnt=gs.exists()?(gs.val().count||0):0;
-                                up[`profile_gifts/${uk}/${gk}`]={giftName:gName,giftIcon:gIcon,count:cnt+1};
-                            });
+                            if(ts.exists()){up[`users/${uk}/points`]=(ts.val().points||0)+Math.floor(cost*0.50);}
                         }));
                     });
                     
                     Promise.all(promises).then(()=>{
-                        addInteractionScore(15);
                         rtdb.ref().update(up).then(()=>{
                             rtdb.ref(`room_messages/${isolatedActiveRoomId}`).push({sender:currentUserKey,senderName:sDat.name,targetKey:'all',targetName:'جميع الحضور',giftName:gName,giftIcon:gIcon,isGift:true,timestamp:Date.now()});
                             if(typeof window.showC4Gift==='function'&&(gIcon==='palace'||gIcon==='plane')){ window.showC4Gift(gIcon); }
@@ -2769,20 +2500,14 @@
                     });
                 } else {
                     if(curPts<cost)return alert(`❌ رصيدك لا يكفي لشراء هذه الهدية (${cost} نقطة)!`);
-                    let up={};up[`users/${currentUserKey}/points`]=curPts-cost;up[`users/${currentUserKey}/weeklyGiftsSent`]=(sDat.weeklyGiftsSent||0)+cost;
+                    let up={};up[`users/${currentUserKey}/points`]=curPts-cost;
                     
                     rtdb.ref(`users/${selectedTargetUserKey}`).once('value').then(ts=>{
-                        if(ts.exists())up[`users/${selectedTargetUserKey}/points`]=(ts.val().points||0)+Math.floor(cost*0.60);
-                        let gk=gName.replace(/[^a-zA-Z0-9]/g,'_');
-                        rtdb.ref(`profile_gifts/${selectedTargetUserKey}/${gk}`).once('value').then(gs=>{
-                            let cnt=gs.exists()?(gs.val().count||0):0;
-                            up[`profile_gifts/${selectedTargetUserKey}/${gk}`]={giftName:gName,giftIcon:gIcon,count:cnt+1};
-                            addInteractionScore(10);
-                            rtdb.ref().update(up).then(()=>{
-                                rtdb.ref(`room_messages/${isolatedActiveRoomId}`).push({sender:currentUserKey,senderName:sDat.name,targetKey:selectedTargetUserKey,targetName:selectedTargetUserName,giftName:gName,giftIcon:gIcon,isGift:true,timestamp:Date.now()});
-                                if(typeof window.showC4Gift==='function'&&(gIcon==='palace'||gIcon==='plane')){ window.showC4Gift(gIcon); }
-                                closeUnifiedGiftBox();alert(`🎉 تم إرسال هدية (${gName}) بنجاح إلى ${selectedTargetUserName}!`);
-                            });
+                        if(ts.exists())up[`users/${selectedTargetUserKey}/points`]=(ts.val().points||0)+Math.floor(cost*0.50);
+                        rtdb.ref().update(up).then(()=>{
+                            rtdb.ref(`room_messages/${isolatedActiveRoomId}`).push({sender:currentUserKey,senderName:sDat.name,targetKey:selectedTargetUserKey,targetName:selectedTargetUserName,giftName:gName,giftIcon:gIcon,isGift:true,timestamp:Date.now()});
+                            if(typeof window.showC4Gift==='function'&&(gIcon==='palace'||gIcon==='plane')){ window.showC4Gift(gIcon); }
+                            closeUnifiedGiftBox();alert(`🎉 تم إرسال هدية (${gName}) بنجاح إلى ${selectedTargetUserName}!`);
                         });
                     });
                 }
