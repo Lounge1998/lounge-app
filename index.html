@@ -716,6 +716,34 @@
     </div>
 </div>
 
+<div id="adminTreasureEditModal" class="modal">
+    <div class="modal-content" style="text-align:right;max-width:330px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <h4 style="margin:0;color:#eab308;font-size:13px">⚙️ تعديل صناديق كنز لاونج (للإدارة)</h4>
+            <button style="background:none;border:none;color:#ef4444;font-size:16px;cursor:pointer" onclick="closeAdminTreasureEditModal()">✖</button>
+        </div>
+        <div style="font-size:10px;color:#cbd5e1;margin-bottom:8px">اختر الصندوق وعدل سعر الفتح وجائزته المخفية:</div>
+        
+        <label style="font-size:10px;color:#fde047">اختر الصندوق:</label>
+        <select id="adminTreasureSelectBox" class="select-box" onchange="onAdminSelectTreasureBox(this.value)">
+            <option value="box1">الصندوق البرونزي</option>
+            <option value="box2">الصندوق الفضي</option>
+            <option value="box3">الصندوق الذهبي الملكي</option>
+        </select>
+
+        <label style="font-size:10px;color:#cbd5e1">اسم الصندوق:</label>
+        <input type="text" id="adminTreasureTitleInput" class="input-box" placeholder="اسم الصندوق">
+
+        <label style="font-size:10px;color:#cbd5e1">سعر الفتح (بالنقاط):</label>
+        <input type="number" id="adminTreasurePriceInput" class="input-box" placeholder="سعر الفتح">
+
+        <label style="font-size:10px;color:#cbd5e1">جائزة الصندوق المخفية (بالنقاط):</label>
+        <input type="number" id="adminTreasureRewardInput" class="input-box" placeholder="جائزة الصندوق">
+
+        <button class="action-btn btn-gold" style="margin-top:6px;padding:8px;font-size:11px" onclick="saveAdminTreasureBoxChanges()">حفظ التعديلات وتحديث الصندوق 💾</button>
+    </div>
+</div>
+
 <div id="userProfileModal" class="modal">
     <div class="modal-content" style="text-align:center">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1539,22 +1567,64 @@
                 box3: { title: "الصندوق الذهبي الملكي النادر", price: 4000, reward: 10000 }
             };
 
+            let isAdmin = (currentUserKey==='msaftwtn_gmail_com'||currentEmail==='msaftwtn@gmail.com'||userData.customId==='1');
+
             let html = '';
             ['box1', 'box2', 'box3'].forEach((bKey, idx)=>{
                 let b = boxes[bKey] || { title: "صندوق الحظ", price: 1000, reward: 2000 };
                 let icons = ["🥉", "🥈", "👑"];
                 
-                let actionButtonHtml = `<button class="action-btn btn-gold" style="padding:6px" onclick="openTreasureBox('${bKey}', ${b.price}, ${b.reward}, '${b.title}')">فتح الصندوق 🎁</button>`;
+                let actionButtonHtml = '';
+                if(isAdmin){
+                    actionButtonHtml = `<button class="action-btn btn-purple" style="padding:6px;margin-top:4px" onclick="openAdminTreasureEditModalForBox('${bKey}')">⚙️ تعديل الصندوق (إدارة)</button>`;
+                } else {
+                    actionButtonHtml = `<button class="action-btn btn-gold" style="padding:6px" onclick="openTreasureBox('${bKey}', ${b.price}, ${b.reward}, '${b.title}')">فتح الصندوق 🎁</button>`;
+                }
 
                 html += `<div class="treasure-card treasure-box-card">
                     <div class="treasure-icon">${icons[idx]}</div>
                     <h3 style="margin:2px 0;color:#fde047;font-size:13px">${b.title}</h3>
-                    <p style="font-size:10px;color:#cbd5e1;margin-bottom:6px">افتح الصندوق واكشف جائزتك المخفية!</p>
-                    <div style="font-size:11px;color:#34d399;font-weight:bold;margin-bottom:6px">السعر: ${Number(b.price).toLocaleString()} نقطة 🪙</div>
+                    <p style="font-size:10px;color:#cbd5e1;margin-bottom:6px">السعر: ${Number(b.price).toLocaleString()} 🪙 | الجائزة: ${Number(b.reward).toLocaleString()} 🪙</p>
                     ${actionButtonHtml}
                 </div>`;
             });
             container.innerHTML = html;
+        });
+    }
+
+    function openAdminTreasureEditModalForBox(boxKey){
+        document.getElementById('adminTreasureSelectBox').value = boxKey;
+        onAdminSelectTreasureBox(boxKey);
+        document.getElementById('adminTreasureEditModal').style.display = 'flex';
+    }
+    function closeAdminTreasureEditModal(){ document.getElementById('adminTreasureEditModal').style.display = 'none'; }
+
+    function onAdminSelectTreasureBox(boxKey){
+        rtdb.ref(`treasure_boxes/${boxKey}`).once('value', snap=>{
+            let b = snap.exists() ? snap.val() : { title: "صندوق الحظ", price: 1000, reward: 2000 };
+            document.getElementById('adminTreasureTitleInput').value = b.title;
+            document.getElementById('adminTreasurePriceInput').value = b.price;
+            document.getElementById('adminTreasureRewardInput').value = b.reward;
+        });
+    }
+
+    function saveAdminTreasureBoxChanges(){
+        if(currentUserKey!=='msaftwtn_gmail_com'&&currentEmail!=='msaftwtn@gmail.com'&&userData.customId!=='1') return alert("⚠️ غير مسموح.");
+        let boxKey = document.getElementById('adminTreasureSelectBox').value;
+        let title = document.getElementById('adminTreasureTitleInput').value.trim();
+        let price = parseInt(document.getElementById('adminTreasurePriceInput').value);
+        let reward = parseInt(document.getElementById('adminTreasureRewardInput').value);
+
+        if(!title || isNaN(price) || isNaN(reward)) return alert("⚠️ يرجى إدخال بيانات صحيحة للصندوق!");
+
+        rtdb.ref(`treasure_boxes/${boxKey}`).set({
+            title: title,
+            price: price,
+            reward: reward
+        }).then(()=>{
+            closeAdminTreasureEditModal();
+            loadTreasureBoxesList();
+            alert("✅ تم تحديث وتعديل الصندوق بنجاح لجميع المستخدمين!");
         });
     }
 
@@ -1983,10 +2053,10 @@
     }
 
     function adminDirectRemoveAgent(targetKey){
-        if(!confirm("⚠️ هل أنت متأكد من إلغاء وكالة هذا المستخدم؟")) return;
+        if(!confirm("⚠️ هل أنت متأكد من إلغاء وكالة هذا المستخدم وحذفه فوراً من قائمة الوكلاء؟")) return;
         rtdb.ref(`users/${targetKey}`).update({ isAgent: false, agentTelegram: '', agentWhatsapp: '', agentBag: 0, agentProvince: '', agentAvatar: '' }).then(()=>{
             rtdb.ref(`notifications/${targetKey}`).push({ text: `⚠️ تم إلغاء صفة الوكيل المعتمد من قبل الإدارة.`, timestamp: Date.now() });
-            alert("✅ تم إلغاء الوكالة بنجاح!");
+            alert("✅ تم إزالة الوكيل فوراً من القائمة ولن يعود إلا بتقديم طلب جديد وموافقة الإدارة!");
             closeUserProfileModal();
         });
     }
@@ -2187,7 +2257,7 @@
             let valNum = foundUser.activeCounterVal || 0;
             let counterInfo = valNum > 0 ? `عداد ${valNum.toLocaleString()} نقطة يومياً` : 'لا يوجد عداد';
             let wCount = foundUser.withdrawCount || 0;
-            let agentControlBtn = foundUser.isAgent ? `<button onclick="adminRemoveAgent('${foundUser.key}')" style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;margin-top:4px;cursor:pointer">إلغاء صفة الوكيل 🗑️</button>` : '';
+            let agentControlBtn = foundUser.isAgent ? `<button onclick="adminRemoveAgent('${foundUser.key}')" style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;margin-top:4px;cursor:pointer">إلغاء صفة الوكيل وحذفه فوراً 🗑️</button>` : '';
             resArea.innerHTML=`<b>👤 اسم المستخدم:</b> ${foundUser.name || 'بدون اسم'}<br>`+
                               `<b>👑 نوع العداد:</b> ${counterInfo}<br>`+
                               `<b>💼 صفة الوكيل:</b> ${foundUser.isAgent?'وكيل معتمد':'مستخدم عادي'}<br>`+
@@ -2196,10 +2266,10 @@
     }
 
     function adminRemoveAgent(userKey){
-        if(currentUserKey!=='msaftwtn_gmail_com'||!confirm("⚠️ هل أنت متأكد من إلغاء وكالة هذا المستخدم؟"))return;
+        if(currentUserKey!=='msaftwtn_gmail_com'||!confirm("⚠️ هل أنت متأكد من إلغاء وكالة هذا المستخدم وحذفه فوراً من قائمة الوكلاء؟"))return;
         rtdb.ref(`users/${userKey}`).update({ isAgent: false, agentTelegram: '', agentWhatsapp: '', agentBag: 0, agentProvince: '', agentAvatar: '' }).then(()=>{
             rtdb.ref(`notifications/${userKey}`).push({ text: `⚠️ تم إلغاء صفة الوكيل المعتمد من قبل الإدارة.`, timestamp: Date.now() });
-            alert("🗑️ تم إلغاء الوكالة بنجاح!");
+            alert("🗑️ تم إزالة الوكيل فوراً من القائمة!");
             adminInspectUser();
         });
     }
